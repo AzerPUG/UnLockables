@@ -43,12 +43,15 @@ end
 function AZP.UnLockables:OnLoadCore()
     UnLockablesMainFrame = AZP.Core.AddOns.UL.MainFrame
     AZP.UnLockables:OnLoadBoth()
+end
 
+function AZP.UnLockables:OnLoadSelf()
     local EventFrame = CreateFrame("Frame")
     EventFrame:SetScript("OnEvent", function(...) AZP.UnLockables:OnEvent(...) end)
     EventFrame:RegisterEvent("GROUP_ROSTER_UPDATE")
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("VARIABLES_LOADED")
+
 
     UpdateFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
     UpdateFrame:SetPoint("CENTER", 0, 250)
@@ -75,9 +78,7 @@ function AZP.UnLockables:OnLoadCore()
     UpdateFrameCloseButton:SetHeight(25)
     UpdateFrameCloseButton:SetPoint("TOPRIGHT", UpdateFrame, "TOPRIGHT", 2, 2)
     UpdateFrameCloseButton:SetScript("OnClick", function() UpdateFrame:Hide() end )
-end
 
-function AZP.UnLockables:OnLoadSelf()
     UnLockablesMainFrame = AZP.UnLockables:CreateSelfMainFrame()
     AZP.UnLockables:OnLoadBoth()
 end
@@ -116,14 +117,13 @@ function AZP.UnLockables:ShowContent(Content)
         QuestsProgressFrame = nil
     end
     QuestsProgressFrame = CreateFrame("FRAME", "QuestsProgressFrame", UnLockablesMainFrame)
-    QuestsProgressFrame:SetPoint("TOP", 0, 0)
+    QuestsProgressFrame:SetPoint("TOPLEFT", 0, 0)
     QuestsProgressFrame:SetSize(UnLockablesMainFrame:GetWidth(), UnLockablesMainFrame:GetHeight())
     local Index = 1
     for ID, Quest in pairs(Content) do
         AZP.UnLockables:CreateQuestFrame(Index, Quest)
         Index = Index + 1
         UnLockablesMainFrame:SetSize(UnLockablesMainFrame:GetWidth(), 20 * Index + 25)
-        GameUtilityAddonFrame:SetSize(UnLockablesMainFrame:GetWidth(), UnLockablesMainFrame:GetHeight() + 36)
     end
 end
 
@@ -211,8 +211,19 @@ function AZP.UnLockables:eventGroupRosterUpdate(...)
 end
 
 
-function AZP.UnLockables:ReceiveVersion()
-
+function AZP.UnLockables:ReceiveVersion(version)
+    if version > AZP.VersionControl["UnLockables"] then
+        if (not HaveShowedUpdateNotification) then
+            HaveShowedUpdateNotification = true
+            UpdateFrame:Show()
+            UpdateFrame.text:SetText(
+                "Please download the new version through the CurseForge app.\n" ..
+                "Or use the CurseForge website to download it manually!\n\n" .. 
+                "Newer Version: v" .. version .. "\n" .. 
+                "Your version: v" .. AZP.VersionControl["UnLockables"]
+            )
+        end
+    end
 end
 
 function AZP.UnLockables:OnEvent(self, event, ...)
@@ -221,4 +232,8 @@ function AZP.UnLockables:OnEvent(self, event, ...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.ManaManagement:eventChatMsgAddon(...)
     end
+end
+
+if not IsAddOnLoaded("AzerPUGsCore") then
+    AZP.UnLockables:OnLoadSelf()
 end
