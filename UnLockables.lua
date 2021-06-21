@@ -78,7 +78,7 @@ function AZP.UnLockables:OnLoadSelf()
     UpdateFrameCloseButton:SetWidth(25)
     UpdateFrameCloseButton:SetHeight(25)
     UpdateFrameCloseButton:SetPoint("TOPRIGHT", UpdateFrame, "TOPRIGHT", 2, 2)
-    UpdateFrameCloseButton:SetScript("OnClick", function() UpdateFrame:Hide() end )
+    UpdateFrameCloseButton:SetScript("OnClick", function() AZP.UnLockables:ShowHideFrame() end )
 
     UnLockablesMainFrame = AZP.UnLockables:CreateSelfMainFrame()
     AZP.UnLockables:OnLoadBoth()
@@ -86,7 +86,7 @@ end
 
 function AZP.UnLockables:CreateSelfMainFrame()
     local UnLockablesSelfFrame = CreateFrame("Button", nil, UIParent, "BackdropTemplate")
-    UnLockablesSelfFrame:SetSize(110, 65)
+    UnLockablesSelfFrame:SetSize(325, 220)
     UnLockablesSelfFrame:SetPoint("CENTER", 0, 0)
     UnLockablesSelfFrame:SetScript("OnDragStart", UnLockablesSelfFrame.StartMoving)
     UnLockablesSelfFrame:SetScript("OnDragStop", function()
@@ -203,7 +203,7 @@ function AZP.UnLockables.Events:VariablesLoadedLocation()
     if AZPULLocation == nil then
         AZPULLocation = {"CENTER", nil, nil, 200, 0}
     end
-    PreparationCheckListSelfFrame:SetPoint(AZPULLocation[1], AZPULLocation[4], AZPULLocation[5])
+    UnLockablesMainFrame:SetPoint(AZPULLocation[1], AZPULLocation[4], AZPULLocation[5])
 end
 
 
@@ -225,7 +225,7 @@ function AZP.UnLockables:ShareVersion()
     end
 end
 
-function AZP.UnLockables:eventChatMsgAddon(...)
+function AZP.UnLockables.Events:ChatMsgAddon(...)
     local prefix, payload, _, sender = ...
     if prefix == "AZPVERSIONS" then
         local version = AZP.UnLockables:GetSpecificAddonVersion(payload, "UL")
@@ -235,9 +235,10 @@ function AZP.UnLockables:eventChatMsgAddon(...)
     end
 end
 
-function AZP.UnLockables:eventGroupRosterUpdate(...)
+function AZP.UnLockables.Events:GroupRosterUpdate(...)
     AZP.UnLockables:ShareVersion()
 end
+
 
 
 function AZP.UnLockables:ReceiveVersion(version)
@@ -247,10 +248,23 @@ function AZP.UnLockables:ReceiveVersion(version)
             UpdateFrame:Show()
             UpdateFrame.text:SetText(
                 "Please download the new version through the CurseForge app.\n" ..
-                "Or use the CurseForge website to download it manually!\n\n" .. 
-                "Newer Version: v" .. version .. "\n" .. 
+                "Or use the CurseForge website to download it manually!\n\n" ..
+                "Newer Version: v" .. version .. "\n" ..
                 "Your version: v" .. AZP.VersionControl["UnLockables"]
             )
+        end
+    end
+end
+
+function AZP.UnLockables:GetSpecificAddonVersion(versionString, addonWanted)
+    local pattern = "|([A-Z]+):([0-9]+)|"
+    local index = 1
+    while index < #versionString do
+        local _, endPos = string.find(versionString, pattern, index)
+        local addon, version = string.match(versionString, pattern, index)
+        index = endPos + 1
+        if addon == addonWanted then
+            return tonumber(version)
         end
     end
 end
@@ -259,7 +273,7 @@ function AZP.UnLockables:OnEvent(self, event, ...)
     if event == "GROUP_ROSTER_UPDATE" then
         AZP.UnLockables.Events:eventGroupRosterUpdate(...)
     elseif event == "CHAT_MSG_ADDON" then
-        AZP.ManaManagement:eventChatMsgAddon(...)
+        AZP.UnLockables.Events:ChatMsgAddon(...)
     elseif event == "VARIABLES_LOADED" then
         AZP.UnLockables.Events:VariablesLoadedLocation()
     end
@@ -267,4 +281,8 @@ end
 
 if not IsAddOnLoaded("AzerPUGsCore") then
     AZP.UnLockables:OnLoadSelf()
+end
+
+AZP.SlashCommands["UL"] = function ()
+    AZP.UnLockables:ShowHideFrame()
 end
