@@ -4,7 +4,7 @@
 ## OptionalDeps: AzerPUGsCore
 ## Notes: Utility for the Game!
 ## Version: SL 9.0.5 (For actual addon version, check UnLockables.lua)
-## SavedVariablesPerCharacter: AGUCheckedData
+## SavedVariablesPerCharacter: AGUCheckedData, AZPULLocation, AZPULShown
 
 dataTables.lua
 SlashCommands.lua

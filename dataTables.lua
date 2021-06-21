@@ -1,6 +1,11 @@
 if AZP == nil then AZP = {} end
 if AZP.UnLockables == nil then AZP.UnLockables = {} end
 
+local StarterType = nil
+local StarterID = nil
+local StartLoc = nil
+local LevelReq = 60
+
 AZP.UnLockables.QLines =    --/dump C_QuestLog.IsQuestFlaggedCompleted(47186)
 {
     Quests =

@@ -178,6 +178,34 @@ function AZP.UnLockables:GetSubsetFromCollection(IDs, Collection)
     return Results
 end
 
+function AZP.UnLockables:ShowHideFrame()
+    if UnLockablesMainFrame:IsShown() then
+        UnLockablesMainFrame:Hide()
+        AZPULShown = false
+    else
+        UnLockablesMainFrame:Show()
+        AZPULShown = true
+    end
+end
+
+function AZP.UnLockables:SaveMainFrameLocation()
+    local temp = {}
+    temp[1], temp[2], temp[3], temp[4], temp[5] = UnLockablesMainFrame:GetPoint()
+    AZPULLocation = temp
+end
+
+function AZP.UnLockables.Events:VariablesLoadedLocation()
+    if AZPULShown == false then
+        UnLockablesMainFrame:Hide()
+    end
+
+    if AZPULLocation == nil then
+        AZPULLocation = {"CENTER", nil, nil, 200, 0}
+    end
+    PreparationCheckListSelfFrame:SetPoint(AZPULLocation[1], AZPULLocation[4], AZPULLocation[5])
+end
+
+
 function AZP.UnLockables:ShareVersion()
     local versionString = string.format("|UL:%d|", AZP.VersionControl["UnLockables"])
     if UnitInBattleground("player") ~= nil then
@@ -228,9 +256,11 @@ end
 
 function AZP.UnLockables:OnEvent(self, event, ...)
     if event == "GROUP_ROSTER_UPDATE" then
-        AZP.ManaManagement:eventGroupRosterUpdate(...)
+        AZP.UnLockables.Events:eventGroupRosterUpdate(...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.ManaManagement:eventChatMsgAddon(...)
+    elseif event == "VARIABLES_LOADED" then
+        AZP.UnLockables.Events:VariablesLoadedLocation()
     end
 end
 
