@@ -1,8 +1,9 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-AZP.VersionControl["UnLockables"] = 5
+AZP.VersionControl["UnLockables"] = 6
 if AZP.UnLockables == nil then AZP.UnLockables = {} end
+if AZP.UnLockables.Events == nil then AZP.UnLockables.Events = {} end
 
 local QLines = AZP.UnLockables.QLines
 local Tabs = {}
