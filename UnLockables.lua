@@ -3,6 +3,7 @@ if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
 AZP.VersionControl["UnLockables"] = 5
 if AZP.UnLockables == nil then AZP.UnLockables = {} end
+if AZP.UnLockables.Events == nil then AZP.UnLockables.Events = {} end
 
 local QLines = AGU.QLines
 local Tabs = {}
