@@ -8,8 +8,9 @@ if AZP.UnLockables.Events == nil then AZP.UnLockables.Events = {} end
 local QLines = AZP.UnLockables.QLines
 local Tabs = {}
 
-local QuestsProgressFrame
-local UnLockablesMainFrame, UpdateFrame
+local optionHeader = "|cFF00FFFFUnLockables|r"
+local QuestsProgressFrame = nil
+local UnLockablesMainFrame, UpdateFrame, AZPULSelfOptionsPanel = nil, nil, nil
 
 function AZP.UnLockables:OnLoadBoth()
     QuestFrameCompleteQuestButton:HookScript("OnClick", function(...)
@@ -44,6 +45,9 @@ end
 function AZP.UnLockables:OnLoadCore()
     UnLockablesMainFrame = AZP.Core.AddOns.UL.MainFrame
     AZP.UnLockables:OnLoadBoth()
+
+    AZP.OptionsPanels:RemovePanel("UnLockables")
+    AZP.OptionsPanels:Generic("UnLockables", optionHeader, function(frame) AZP.UnLockables:FillOptionsPanel(frame) end)
 end
 
 function AZP.UnLockables:OnLoadSelf()
@@ -82,6 +86,23 @@ function AZP.UnLockables:OnLoadSelf()
 
     UnLockablesMainFrame = AZP.UnLockables:CreateSelfMainFrame()
     AZP.UnLockables:OnLoadBoth()
+
+    AZPULSelfOptionsPanel = CreateFrame("FRAME", nil)
+    AZPULSelfOptionsPanel.name = optionHeader
+    InterfaceOptions_AddCategory(AZPULSelfOptionsPanel)
+    AZPULSelfOptionsPanel.header = AZPULSelfOptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalHuge")
+    AZPULSelfOptionsPanel.header:SetPoint("TOP", 0, -10)
+    AZPULSelfOptionsPanel.header:SetText("|cFF00FFFFAzerPUG's UnLockables Options!|r")
+
+    AZPULSelfOptionsPanel.footer = AZPULSelfOptionsPanel:CreateFontString(nil, "ARTWORK", "GameFontNormalLarge")
+    AZPULSelfOptionsPanel.footer:SetPoint("TOP", 0, -300)
+    AZPULSelfOptionsPanel.footer:SetText(
+        "|cFF00FFFFAzerPUG Links:\n" ..
+        "Website: www.azerpug.com\n" ..
+        "Discord: www.azerpug.com/discord\n" ..
+        "Twitch: www.twitch.tv/azerpug\n|r"
+    )
+    AZP.UnLockables:FillOptionsPanel(AZPULSelfOptionsPanel)
 end
 
 function AZP.UnLockables:CreateSelfMainFrame()
@@ -269,9 +290,13 @@ function AZP.UnLockables:GetSpecificAddonVersion(versionString, addonWanted)
     end
 end
 
+function AZP.UnLockables:FillOptionsPanel(frameToFill)
+    frameToFill:Hide()
+end
+
 function AZP.UnLockables:OnEvent(self, event, ...)
     if event == "GROUP_ROSTER_UPDATE" then
-        AZP.UnLockables.Events:eventGroupRosterUpdate(...)
+        AZP.UnLockables.Events:GroupRosterUpdate(...)
     elseif event == "CHAT_MSG_ADDON" then
         AZP.UnLockables.Events:ChatMsgAddon(...)
     elseif event == "VARIABLES_LOADED" then
