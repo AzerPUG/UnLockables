@@ -311,3 +311,7 @@ end
 AZP.SlashCommands["UL"] = function ()
     AZP.UnLockables:ShowHideFrame()
 end
+
+AZP.SlashCommands["ul"] = AZP.SlashCommands["UL"]
+AZP.SlashCommands["unlock"] = AZP.SlashCommands["UL"]
+AZP.SlashCommands["unlockables"] = AZP.SlashCommands["UL"]
