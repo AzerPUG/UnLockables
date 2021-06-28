@@ -1,7 +1,7 @@
 if AZP == nil then AZP = {} end
 if AZP.VersionControl == nil then AZP.VersionControl = {} end
 
-AZP.VersionControl["UnLockables"] = 8
+AZP.VersionControl["UnLockables"] = 9
 if AZP.UnLockables == nil then AZP.UnLockables = {} end
 if AZP.UnLockables.Events == nil then AZP.UnLockables.Events = {} end
 
