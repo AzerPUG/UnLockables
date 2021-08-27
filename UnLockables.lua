@@ -57,7 +57,6 @@ function AZP.UnLockables:OnLoadSelf()
     EventFrame:RegisterEvent("CHAT_MSG_ADDON")
     EventFrame:RegisterEvent("VARIABLES_LOADED")
 
-
     UpdateFrame = CreateFrame("Frame", nil, UIParent, "BackdropTemplate")
     UpdateFrame:SetPoint("CENTER", 0, 250)
     UpdateFrame:SetSize(400, 200)
